@@ -16,9 +16,14 @@ jobs:
           rm ngrok.zip
           mv ngrok/ngrok.exe ngrok.exe
 
-      - name: Update ngrok agent
-        run: |          
-          .\ngrok.exe config upgrade
+      - name: Replace ngrok with latest version
+        run: |
+          # Replace ngrok with the latest version
+          Invoke-WebRequest https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-windows-amd64.zip -OutFile ngrok_latest.zip
+          Expand-Archive -Path ngrok_latest.zip -DestinationPath ngrok_tmp
+          rm ngrok_latest.zip
+          mv ngrok_tmp/ngrok.exe ngrok.exe
+          rm -r ngrok_tmp
 
       - name: Authenticate
         run: .\ngrok.exe authtoken $Env:NGROK_AUTH_TOKEN
