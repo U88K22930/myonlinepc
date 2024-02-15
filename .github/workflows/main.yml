@@ -17,10 +17,8 @@ jobs:
           mv ngrok/ngrok.exe ngrok.exe
 
       - name: Update ngrok agent
-        run: |
-          .\ngrok.exe update
+        run: |          
           .\ngrok.exe config upgrade
-          .\ngrok.exe config check
 
       - name: Authenticate
         run: .\ngrok.exe authtoken $Env:NGROK_AUTH_TOKEN
