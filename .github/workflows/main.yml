@@ -9,25 +9,14 @@ jobs:
     runs-on: windows-latest
 
     steps:
-      - name: Download ngrok
-        run: |
-          Invoke-WebRequest https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-windows-amd64.zip -OutFile ngrok.zip
-          Expand-Archive -Path ngrok.zip -DestinationPath ngrok
-          rm ngrok.zip
-          mv ngrok/ngrok.exe ngrok.exe
+      - name: Download
+        run: Invoke-WebRequest https://bin.equinox.io/c/bNyj1mQVY4c/ngrok-v3-stable-windows-amd64.zip -OutFile ngrok.zip
 
-      - name: Replace ngrok with latest version
-        run: |
-          # Replace ngrok with the latest version
-          Invoke-WebRequest https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-windows-amd64.zip -OutFile ngrok_latest.zip
-          Expand-Archive -Path ngrok_latest.zip -DestinationPath ngrok_tmp
-          rm ngrok_latest.zip
-          rm ngrok.exe  # Remove the existing ngrok executable
-          mv ngrok_tmp/ngrok.exe ngrok.exe
-          rm -r ngrok_tmp
+      - name: Extract
+        run: Expand-Archive -Path ngrok.zip -DestinationPath ngrok
 
-      - name: Authenticate
-        run: .\ngrok.exe authtoken $Env:NGROK_AUTH_TOKEN
+      - name: Auth
+        run: .\ngrok\ngrok.exe authtoken $Env:NGROK_AUTH_TOKEN
 
         env:
           NGROK_AUTH_TOKEN: ${{ secrets.NGROK_AUTH_TOKEN }}
@@ -41,4 +30,4 @@ jobs:
         run: Set-LocalUser -Name "runneradmin" -Password (ConvertTo-SecureString -AsPlainText "P@ssw0rd!" -Force)
 
       - name: Create Tunnel
-        run: .\ngrok.exe tcp 3389
+        run: .\ngrok\ngrok.exe tcp 3389
